@@ -10,15 +10,15 @@ export default class ProductManager{
         this.products = await this.getProducts();
     }
     addProduct = async(pProduct) =>{
-        if(Object.values(pProduct).includes(undefined)) {console.log("Error: Datos incompletos"); return;}
-        if(this.products.some(product => product.code === pProduct.code)) {console.log("Error: Código repetido"); return;}
+        if(Object.values(pProduct).includes(undefined)) {return("Error: Datos incompletos");}
+        if(this.products.some(product => product.code === pProduct.code)) {return("Error: Código repetido");}
         if(this.products.length === 0) {pProduct.id = "1"}
         else {pProduct.id = (parseInt(this.products[this.products.length - 1].id) + 1).toString();}
         this.products.push(pProduct);
         await fs.promises.writeFile(this.path, JSON.stringify(this.products));
         let list = await this.getProducts();
         this.products = list;
-        console.log("Producto añadido");
+        return("Producto añadido");
     }
     getProductsAsync = async() => {
         let result = await fs.promises.readFile(this.path, 'utf-8');
@@ -47,14 +47,17 @@ export default class ProductManager{
         else return("Error: Producto no encontrado");
     }
     updateProduct = async(pId, newProduct) => {
+        if(Object.values(newProduct).includes(undefined)){return("Error: Datos incompletos")}
         let product = this.products.find(product => product.id == pId);
         if(product !== undefined){
-            product = {...product, ...newProduct};
+            let index = this.products.findIndex(product => product.id == pId);
+            this.products[index] = {...product, ...newProduct};
             await fs.promises.writeFile(this.path, JSON.stringify(this.products));
-            this.products = await this.getProducts();
-            console.log("Producto actualizado");
+            let list = await this.getProducts();
+            this.products = list;
+            return("Producto actualizado");
         }
-        else{console.log("Error: Producto no encontrado");}       
+        else{return("Error: Producto no encontrado");}       
     }
     deleteProduct = async(pId) =>{
         let aux = [];
@@ -62,20 +65,9 @@ export default class ProductManager{
             if(x.id != pId) aux.push(x);
         });
         await fs.promises.writeFile(this.path, JSON.stringify(aux));
-        this.products = this.getProducts();
-        console.log("Producto eliminado");
+        let list = await this.getProducts();
+        this.products = list
+        return("Producto eliminado");
     }
 }
-class Product{
-    constructor(pTitle, pDescription, pPrice, pThumbnail, pCode, pStock){
-        this.title = pTitle;
-        this.description = pDescription;
-        this.price = pPrice;
-        this.thumbnail = pThumbnail;
-        this.code = pCode;
-        this.stock = pStock;
-    }
-}
-
-
 
