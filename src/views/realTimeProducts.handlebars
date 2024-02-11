@@ -1,0 +1,41 @@
+<div>
+    {{#each products}}
+        <li>ID: {{this.id}}
+            <ul>Nombre: {{this.title}}</ul>
+            <ul>Descripción: {{this.description}}</ul>
+            <ul>Stock: {{this.stock}}</ul>
+        </li>
+    {{/each}}
+</div>
+<br>
+<div class="formulario-contacto">
+    <form action="">
+        <p>
+            <label>Codigo</label>
+            <input type="text" id="code" placeholder="Codigo">
+        </p>        
+        <p>
+            <label>Nombre</label>
+            <input type="text" id="name" placeholder="Nombre">
+        </p>
+        <p>
+            <label>Precio</label>
+            <input type="text" id="price" placeholder="Precio">
+        </p>
+        <p>
+            <label>Stock</label>
+            <input type="text" id="stock" placeholder="Stock">
+        </p>
+        <p>
+            <label>Descripción</label>
+            <textarea name="Descripcion" rows="3" id="description" placeholder="Descripcion"></textarea>
+        </p>
+        <p>
+        <button id="input">
+            Enviar
+        </button>
+        </p>
+    </form>
+</div>
+<script src="socket.io/socket.io.js"></script>
+<script src="js/index.js"></script>

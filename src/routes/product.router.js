@@ -4,45 +4,47 @@ import ProductManager from "../modules/ProductManager.js";
 const productRouter = Router();
 const pm = new ProductManager();
 
+/*Muestra los productos o una cantidad de ellos*/ 
 productRouter.get('/', async(req, res) => {
     let limit = req.query.limit;
-    let products;
+
+    //Obtengo todos los productos
+    let operation = await pm.getProducts();
+
+    //Si fue especificado el ?limit=
     if(limit !== undefined){
-        products = await pm.getProducts();
-        products = products.slice(0, parseInt(limit));
+        operation.message = (operation.message).slice(0, parseInt(limit));
     }
-    else{
-        products = await pm.getProducts();
-    }
-    res.send(products);
+    res.json({status:operation.status, message:operation.message})
 })
 
+/*Devuelve el producto según id*/ 
 productRouter.get('/:id', async(req, res) => {
     let id = req.params.id;
-    let product = await pm.getProductById(id);
-    if(product === String){
-        res.status(400).send({status: 'error', message:{product}})
-    }
-    res.send(product);
+    let operation = await pm.getProductById(id);
+    res.json({status:operation.status, message:operation.message})
 })
 
+/*Agrega un producto con el body del endpoint*/
 productRouter.post('/', async(req, res) => {
     let product = req.body;
-    let status = await pm.addProduct(product);
-    res.send(status);
+    let operation = await pm.addProduct(product);
+    res.json({status: operation.status, message: operation.message})
 })
 
+/*Actualiza un producto con el body del endpoint*/ 
 productRouter.put('/:id', async(req, res) => {
     let id = req.params.id;
     let product = req.body;
-    let status = await pm.updateProduct(id, product);
-    res.send(status);
+    let operation = await pm.updateProduct(id, product);
+    res.json({status: operation.status, message: operation.message})
 })
 
+/*Elimina un producto según id*/
 productRouter.delete('/:id', async(req, res) => {
     let id = req.params.id;
-    let status = await pm.deleteProduct(id);
-    res.send(status);
+    let operation = await pm.deleteProduct(id);
+    res.json({status: operation.status, message: operation.message})
 })
 
 export default productRouter;
