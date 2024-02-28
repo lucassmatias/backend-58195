@@ -1,6 +1,6 @@
 import { Router } from "express";
-import CartManager from "../modules/CartManager.js";
-import ProductManager from "../modules/ProductManager.js";
+import CartManager from "../dao/db/cart.manager.js";
+import ProductManager from "../dao/db/product.manager.js";
 
 const cartRouter = Router();
 //Instancio CartManager y ProductManager ya que manipulo ambos tipos de datos
@@ -16,6 +16,12 @@ cartRouter.get('/:id', async(req, res) => {
     res.json({status: operation.status, message:operation.message});
 })
 
+cartRouter.get('/', async(req, res) => {
+    //Obtiene todos los productos del carro
+    let operation = await cm.getCarts();
+    res.json({status: operation.status, message:operation.message});
+})
+
 /*Crea un nuevo carrito vacío*/
 cartRouter.post('/', async(req, res) => {
 
@@ -24,25 +30,19 @@ cartRouter.post('/', async(req, res) => {
     res.json({status: operation.status, message:operation.message});
 })
 
+cartRouter.delete('/:cid', async(req, res) => {
+    let cartid = req.params.cid;
+    //Según lo que entendí esta vez, ya con entrar a este endpoint se crea el carrito con id autoincrementable
+    let operation = await cm.deleteCart(cartid);
+    res.json({status: operation.status, message:operation.message});
+})
+
 /*Añade un producto a un carrito*/
 cartRouter.post('/:cid/product/:pid', async(req, res) => {
     let cartid = req.params.cid;
-
-    //Primero consulta por el carrito
-    let getCart = await cm.getCartById(cartid);
-    if(getCart.status != 'success'){
-        return({status: 'error', message: 'Carrito no encontrado'});
-    }
     let productid = req.params.pid;
-
-    //Luego consulta el producto
-    let getProduct = await pm.getProductById(productid);
-    if(getProduct.status != 'success'){
-        return({status: 'error', message: 'Producto no encontrado'});
-    }
-    
     //Agrega el producto al carrito 
-    let operation = await cm.addProducttoCart(getCart.message, getProduct.message);
+    let operation = await cm.addProducttoCart(cartid, productid);
     res.json({status: operation.status, message:operation.message});
 })
 
