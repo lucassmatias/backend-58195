@@ -13,7 +13,7 @@ Swal.fire({
     allowOutsideClick: false
 }).then(result => {
     user = result.value;
-    userBox.innerHTML = `User: ${user}`
+    userBox.innerHTML = `User: ${user}`;
     socket.emit('login', user);
 });
 
@@ -26,10 +26,9 @@ chatBox.addEventListener('keyup', (e) => {
 })
 
 socket.on('messageLogs', (data) => {
-    console.log(data);
     log.innerHTML = '';
     data.forEach(m => {
-        log.innerHTML += `${m.user} says: ${m.message}<br/>`
+        log.innerHTML += `${m.user}: ${m.message}<br/>`
     });
 })
 

@@ -7,6 +7,7 @@ import Handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 import { Server } from "socket.io";
 import ProductManager from "./dao/db/product.manager.js";
+import MessageManager from "./dao/db/message.manager.js";
 import mongoose from "mongoose";
 
 const app = Express();
@@ -33,32 +34,30 @@ const httpserver = app.listen(8080, () => {
 })
 
 const pm = new ProductManager();
+const mm = new MessageManager();
 //Servidor tcp
 const io = new Server(httpserver);
-io.on('connection', socket => {
-    console.log("Nuevo cliente conectado");
+
+io.on('connection', (socket) => {
+    console.log('Nuevo cliente conectado', `${socket.id}`);
 
     //Escucha el producto por socket
     socket.on('addProduct', async(data) => {
         let operation = await pm.addProduct(data);
-        console.log([operation.status, operation.message]);
         operation = await pm.getProducts();
         io.emit('refreshProducts', operation.message);
-    })
-})
+    });
 
-let messages = [];
+    socket.on('message', async(data) => {
+        let operation = await mm.addMessage(data.user, data.message);
+        let result = await mm.getChat();
+        io.emit('messageLogs', result.message);
+    });
 
-io.on('connection', (socket) => {
-    console.log('Nuevo cliente conectado', `${socket.id}`);
-    socket.on('message', (data) => {
-        messages.push(data);
-        io.emit('messageLogs', messages);
-    })
     socket.on('login', (data) => {
-        socket.emit('messageLogs', messages);
+        socket.emit('messageLogs');
         socket.broadcast.emit('notification', data);
-    })
+    });
 });
 
 mongoose.connect('mongodb+srv://zaskao:lucas2014@cluster0.upem3ly.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');

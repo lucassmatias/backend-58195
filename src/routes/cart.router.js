@@ -1,11 +1,9 @@
 import { Router } from "express";
 import CartManager from "../dao/db/cart.manager.js";
-import ProductManager from "../dao/db/product.manager.js";
 
 const cartRouter = Router();
 //Instancio CartManager y ProductManager ya que manipulo ambos tipos de datos
 const cm = new CartManager();
-const pm = new ProductManager();
 
 /*Obtiene los productos según el carrito*/
 cartRouter.get('/:id', async(req, res) => {

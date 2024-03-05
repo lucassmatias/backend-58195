@@ -1,8 +1,8 @@
-import express from 'express';
+import { Router } from "express";
 
-const router = express.Router();
+const chatRouter = Router();
 
-router.get('/', (req,res) => {
+chatRouter.get('/', async(req,res) => {
     res.render('chat', {});
 })
 
