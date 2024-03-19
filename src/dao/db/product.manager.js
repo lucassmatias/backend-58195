@@ -30,10 +30,31 @@ export default class ProductManager{
         }
     }
 
-    getProducts = async() => {
+    getProducts = async(pLimit, pPage, pQuery, pSort) => {
         try {
-            let products = await productModel.find();
-            return({status:'success', message: products});
+
+            //Valida los datos para evitar errores
+            let limit = pLimit || 10;
+            let page = pPage || 1;
+            let query = {};
+            if(pQuery){
+                query = {
+                    title: pQuery
+                }
+            }
+            let sort;
+            if(pSort == 'asc'){
+                sort = 1;
+            }else if(pSort == 'desc'){
+                sort = -1;
+            }
+            else{
+                sort = 1;
+            }
+
+            //Devuelve el objeto pedido con status, payload y el resto de data
+            let {docs, ...rest} = await productModel.paginate(query, {limit: limit, page: page, sort: {price: sort}, lean: true});
+            return({status:'success', message: {status: 'success', payload: docs, ...rest}});
         } catch (ex) {
             return({status:'error', message: 'Productos no encontrados'})
         }

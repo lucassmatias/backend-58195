@@ -1,7 +1,16 @@
 <div>
     {{> home}}
 </div>
-<br>
+
+<h2>Paginación</h2>
+{{#if data.hasPrevPage}}
+    <a href="{{prevPage}}">Anterior</a>
+{{/if}}
+{{#if data.hasNextPage}}
+    <a href="{{nextPage}}">Siguiente</a>
+{{/if}}
+<br></br>
+<h2>Formulario para crear producto</h2>
 <div class="formulario-contacto">
     <form action="">
         <p>

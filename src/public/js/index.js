@@ -7,6 +7,7 @@ let stockInput = document.getElementById('stock');
 let descriptionInput = document.getElementById('description');
 let buttonInput = document.getElementById('input');
 let productblock = document.getElementById('product-div');
+let buttonAdd = document.getElementsByClassName('button-add');
 
 //Envia el producto por socket
 buttonInput.addEventListener('click', (e) => {
@@ -25,6 +26,7 @@ buttonInput.addEventListener('click', (e) => {
     //Envia el mensaje para crear el producto al servidor
     socket.emit('addProduct', product);
 })
+
 //Recibe la nueva lista del servidor para mostrarla en pantalla
 socket.on('refreshProducts', (data) => {
     productblock.innerHTML = JSON.stringify(data);
@@ -38,5 +40,6 @@ socket.on('refreshProducts', (data) => {
             </li>`
         })}*/
 })
+
 
 

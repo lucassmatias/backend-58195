@@ -7,14 +7,11 @@ const pm = new ProductManager();
 /*Muestra los productos o una cantidad de ellos*/ 
 productRouter.get('/', async(req, res) => {
     let limit = req.query.limit;
-
+    let page = req.query.page;
+    let query = req.query.query;
+    let sort = req.query.sort;
     //Obtengo todos los productos
-    let operation = await pm.getProducts();
-
-    //Si fue especificado el ?limit=
-    if(limit !== undefined){
-        operation.message = (operation.message).slice(0, parseInt(limit));
-    }
+    let operation = await pm.getProducts(limit, page, query, sort);
     res.json({status:operation.status, message:operation.message})
 })
 

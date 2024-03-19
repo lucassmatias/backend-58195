@@ -1,9 +1,12 @@
 <div id="product-div">
-    {{#each products}}
+    {{#each data.payload}}
         <li>Codigo: {{this.code}}
             <ul>Nombre: {{this.title}}</ul>
             <ul>Descripción: {{this.description}}</ul>
+            <ul>Precio: {{this.price}}</ul>
             <ul>Stock: {{this.stock}}</ul>
         </li>
+        <button class="button-add">Agregar al carrito</button>
+        <br></br>
     {{/each}}
 </div>
